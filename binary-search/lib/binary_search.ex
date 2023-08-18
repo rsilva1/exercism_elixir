@@ -18,17 +18,14 @@ defmodule BinarySearch do
   """
 
   @spec search(tuple, integer) :: {:ok, integer} | :not_found
-  def search(numbers, _key) when numbers == {}, do: :not_found
+  def search(numbers, key), do: binary_search(numbers, 0, tuple_size(numbers), div(tuple_size(numbers), 2), key)
 
-  def search(numbers, key) do
-    n = tuple_size(numbers)
-    idx = div(n, 2)
-    mid_element = elem(numbers, idx)
-
-    cond do
-      mid_element == key -> {:ok, idx}
-      mid_element < key -> search(Enum.slice(numbers, 0, idx - 1), key)
-      true -> search(Enum.slice(numbers, (idx + 1)..(n - 1)), key)
-    end
+  defp binary_search(_tuple, first, last, _mid, _key) when first >= last, do: :not_found
+  defp binary_search(tuple, _first, _last, mid, key) when elem(tuple, mid) == key, do: {:ok, mid}
+  defp binary_search(tuple, first, _last, mid, key) when key < elem(tuple, mid) do
+    binary_search(tuple, first, mid, div(first + mid, 2), key)
+  end
+  defp binary_search(tuple, _first, last, mid, key) do
+    binary_search(tuple, mid + 1, last, div(mid + 1 + last, 2), key)
   end
 end
